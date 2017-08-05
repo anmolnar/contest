@@ -21,6 +21,9 @@ public class Main {
             System.out.printf("%s => %d\n", k, v);
         });
 
+        System.out.println("\n=== Testing Hidden iterator ===");
 
+        HiddenIterator it = new HiddenIterator();
+        it.addTenThings();
     }
 }
