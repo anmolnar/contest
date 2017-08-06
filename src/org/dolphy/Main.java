@@ -1,9 +1,9 @@
 package org.dolphy;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,5 +25,24 @@ public class Main {
 
         HiddenIterator it = new HiddenIterator();
         it.addTenThings();
+
+        Deque<String> dekk = new ArrayDeque<>();
+        dekk.add("andor");
+        dekk.addFirst("bela");
+        System.out.println("\nDeque = " + dekk);
+        System.out.println("Peek = " + dekk.peekLast());
+
+        TestHarness harness = new TestHarness();
+        try {
+            long elapsed = harness.timeTasks(10, new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("hello");
+                }
+            });
+            System.out.println("Elapsed = " + elapsed);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted");
+        }
     }
 }
