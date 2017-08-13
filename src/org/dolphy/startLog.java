@@ -1,3 +1,5 @@
+package org.dolphy;
+
 import java.io.*;
 
 public class startLog {
@@ -7,6 +9,7 @@ public class startLog {
 			LogWriter log = new LogWriter(writer);
 			log.start();
 			log.log("Hello!");
+			log.log("Hello from the other side!");
 			System.out.println("Press any key to stop");
 			try {
         	    System.in.read();

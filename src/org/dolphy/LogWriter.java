@@ -1,28 +1,30 @@
+package org.dolphy;
+
 import java.io.*;
 import java.util.concurrent.*;
 
-public class LogWriter {
-	private final int CAPACITY = 10;
+class LogWriter {
 	private final BlockingQueue<String> queue;
 	private final LoggerThread logger;
 	private boolean isShutdown;
 	private int reservations;
 
-	public LogWriter(PrintWriter writer) {
+	LogWriter(PrintWriter writer) {
+		int CAPACITY = 10;
 		this.queue = new LinkedBlockingQueue<String>(CAPACITY);
 		this.logger = new LoggerThread(writer);
 	}
 
-	public void start() { logger.start(); }
+	void start() { logger.start(); }
 
-	public void stop() {
+	void stop() {
 		synchronized (this) {
 			isShutdown = true;
 		}
 		logger.interrupt();
 	}
 
-	public void log(String msg) throws InterruptedException {
+	void log(String msg) throws InterruptedException {
 		synchronized (this) {
 			if (isShutdown)
 				throw new IllegalStateException();
@@ -35,7 +37,7 @@ public class LogWriter {
 	private class LoggerThread extends Thread {
 		private final PrintWriter writer;
 
-		public LoggerThread(PrintWriter writer) {
+		LoggerThread(PrintWriter writer) {
 			this.writer = writer;
 		}
 
@@ -62,5 +64,3 @@ public class LogWriter {
 		}
 	}
 }
-
-
