@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainGui {
     private final static Random random = new Random();
@@ -29,13 +30,24 @@ public class MainGui {
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                backgroundExec.execute(new Runnable() {
+                quitButton.setEnabled(false);
+                quitButton.setText("Busy...");
+                Future bgtask = backgroundExec.submit(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             Thread.sleep(3000);
+
                         } catch (InterruptedException ex) {
                             Thread.currentThread().interrupt();
+                        } finally {
+                            GuiExecutor.instance().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    quitButton.setEnabled(true);
+                                    quitButton.setText("OK");
+                                }
+                            });
                         }
                     }
                 });
