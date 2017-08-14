@@ -1,7 +1,13 @@
+package org.dolphy;
+
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.*;
 
-public class ThreadPerTaskWebServer {	
+public class TaskExecutionWebServer {	
+	private static final int N_THREADS = 2;
+	private static final Executor exec = Executors.newFixedThreadPool(N_THREADS);
+
 	public static void main(String[] args) throws IOException {
 		ServerSocket socket = new ServerSocket(6000);
 		System.out.println("Server is listening on port 6000");
@@ -16,7 +22,7 @@ public class ThreadPerTaskWebServer {
 						}
 					}
 				};
-			new Thread(task).start();
+			exec.execute(task);
 		}
 	}
 

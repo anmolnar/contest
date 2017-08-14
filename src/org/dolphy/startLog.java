@@ -1,3 +1,5 @@
+package org.dolphy;
+
 import java.io.*;
 
 public class startLog {
