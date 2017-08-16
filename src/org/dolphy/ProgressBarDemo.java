@@ -18,16 +18,14 @@ public class ProgressBarDemo extends JPanel {
          * Main task. Executed in background thread.
          */
         @Override
-        public Void doInBackground() {
+        public Void doInBackground() throws InterruptedException {
             Random random = new Random();
             int progress = 0;
             //Initialize progress property.
             setProgress(0);
-            while (progress < 100) {
+            while (progress < 100 && !Thread.currentThread().isInterrupted()) {
                 //Sleep for up to one second.
-                try {
-                    Thread.sleep(random.nextInt(1000));
-                } catch (InterruptedException ignore) {}
+                Thread.sleep(random.nextInt(1000));
                 //Make random progress.
                 progress += random.nextInt(10);
                 setProgress(Math.min(progress, 100));
@@ -83,8 +81,9 @@ public class ProgressBarDemo extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cancelButton.setEnabled(false);
-                task.cancel(true);
-                taskOutput.append("Task has been canceled");
+                if (task.cancel(true)) {
+                    taskOutput.append("Task has been canceled");
+                }
             }
         });
 

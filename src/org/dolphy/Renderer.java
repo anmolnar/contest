@@ -49,7 +49,7 @@ public class Renderer {
         System.out.println("Rendering main text of the page");
     }
 
-    private static RuntimeException launderThrowable(Throwable t) {
+    public static RuntimeException launderThrowable(Throwable t) {
         if (t instanceof RuntimeException)
             return (RuntimeException) t;
         else if (t instanceof Error)
