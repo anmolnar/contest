@@ -2,8 +2,8 @@ package org.dolphy;
 
 import java.util.concurrent.CountDownLatch;
 
-public class TestHarness {
-    public long timeTasks(int nThreads, final Runnable task) throws InterruptedException {
+class TestHarness {
+    long timeTasks(int nThreads, final Runnable task) throws InterruptedException {
         final CountDownLatch startGate = new CountDownLatch(1);
         final CountDownLatch endGate = new CountDownLatch(nThreads);
 

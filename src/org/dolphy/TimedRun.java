@@ -34,7 +34,7 @@ class TimedRun {
         }, 5, TimeUnit.SECONDS);
     }
 
-    public static void timedRun(final Runnable r, long timeout, TimeUnit unit) throws InterruptedException {
+    private static void timedRun(final Runnable r, long timeout, TimeUnit unit) throws InterruptedException {
         class RethrowableTask implements Runnable {
             private volatile Throwable t;
 

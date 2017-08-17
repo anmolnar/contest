@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class Renderer {
+class Renderer {
     private final ExecutorService executor;
 
     Renderer(ExecutorService executor) {
@@ -49,7 +49,7 @@ public class Renderer {
         System.out.println("Rendering main text of the page");
     }
 
-    public static RuntimeException launderThrowable(Throwable t) {
+    static RuntimeException launderThrowable(Throwable t) {
         if (t instanceof RuntimeException)
             return (RuntimeException) t;
         else if (t instanceof Error)
@@ -67,6 +67,6 @@ class ImageInfo {
 }
 
 class ImageData {
-    public String name;
+    String name;
 
 }
