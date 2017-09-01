@@ -14,6 +14,12 @@ public class start {
 				}
 			}
 		});
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                System.out.println("JVM shutdown");
+            }
+        });
 		serverThread.start();
 		System.out.println("Web server started");
 		System.out.println("Press any key to stop");
