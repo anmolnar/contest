@@ -38,7 +38,7 @@ abstract class SocketUsingTask<T> implements CancellableTask<T> {
     @GuardedBy("this")
     private Socket socket;
 
-    protected synchronized void setSocket(Socket s) {
+    synchronized void setSocket(Socket s) {
         socket = s;
     }
 
