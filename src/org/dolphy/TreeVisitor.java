@@ -83,44 +83,42 @@ abstract class TreeVis
 
 class SumInLeavesVisitor extends TreeVis {
     private int sum = 0;
-    private int visited = 0;
 
     public int getResult() {
         //implement this
-        return visited;
+        return sum;
     }
 
     public void visitNode(TreeNode node) {
         //implement this
-        visited += 1;
     }
 
     public void visitLeaf(TreeLeaf leaf) {
         //implement this
-        //System.out.printf("Visit leaf: %d\n", leaf.getValue());
         sum += leaf.getValue();
-        visited += 1;
     }
 }
 
 class ProductOfRedNodesVisitor extends TreeVis {
-    private int product = 1;
+    private long product = 1;
+    private int m = (int)Math.pow(10, 9) + 7;
+
     public int getResult() {
         //implement this
-        return product;
+        return (int)product;
     }
 
     public void visitNode(TreeNode node) {
         //implement this
         if (node.getColor() == Color.RED) {
-            product *= node.getValue();
+            product = (product * node.getValue()) % m;
         }
     }
 
     public void visitLeaf(TreeLeaf leaf) {
         //implement this
         if (leaf.getColor() == Color.RED) {
-            product *= leaf.getValue();
+            product = (product * leaf.getValue()) % m;
         }
     }
 }
@@ -150,7 +148,7 @@ class FancyVisitor extends TreeVis {
 }
 
 public class TreeVisitor {
-    private static Map<Integer, Tree> visited = new HashMap<>();
+    private static Set<Integer> visited = new HashSet<Integer>();
 
     private static Tree solve() {
         //read the tree from STDIN and return its root as a return value of this function
@@ -172,36 +170,48 @@ public class TreeVisitor {
             }
         }
         // Read edges
-        Map<Integer, List<Integer>> edges = new HashMap<>(n);
+        Map<Integer, Set<Integer>> edges = new HashMap<>(n);
         for (int i = 0; i < n-1; i++) {
             int u = scan.nextInt() - 1;
             int v = scan.nextInt() - 1;
             if (!edges.containsKey(u)) {
-                edges.put(u, new ArrayList<Integer>());
+                edges.put(u, new HashSet<Integer>());
+            }
+            if (!edges.containsKey(v)) {
+                edges.put(v, new HashSet<Integer>());
             }
             edges.get(u).add(v);
-            System.out.printf("Edge: %d -> %d\n", u, v);
+            edges.get(v).add(u);
         }
 
         // Create nodes
         return createNode(0, 0, values, colors, edges);
     }
 
-    static Tree createNode(int index, int depth, int[] values, Color[] colors, Map<Integer, List<Integer>> edges) {
-        if (visited.containsKey(index)) {
-            System.out.printf("Already visited: %d\n", index);
-            return visited.get(index);
+    static Tree createNode(int index, int depth, int[] values, Color[] colors, Map<Integer, Set<Integer>> edges) {
+        if (visited.contains(index)) {
+            return null;
         }
-        System.out.printf("Adding index: %d\n", index);
+        visited.add(index);
         Tree node;
         if (!edges.containsKey(index)) {
             node = new TreeLeaf(values[index], colors[index], depth);
         } else {
-            node = new TreeNode(values[index], colors[index], depth);
-            List<Integer> children = edges.get(index);
-            System.out.printf("Children of %d: %s\n", index, children);
-            for (int child  : children) {
-                ((TreeNode)node).addChild(createNode(child, depth + 1, values, colors, edges));
+            Set<Integer> childEdges = edges.get(index);
+            Set<Tree> children = new HashSet<Tree>();
+            for (int childIndex : childEdges) {
+                Tree childNode = createNode(childIndex, depth + 1, values, colors, edges);
+                if (childNode != null) {
+                    children.add(childNode);
+                }
+            }
+            if (children.isEmpty()) {
+                node = new TreeLeaf(values[index], colors[index], depth);
+            } else {
+                node = new TreeNode(values[index], colors[index], depth);
+                for (Tree childNode : children) {
+                    ((TreeNode) node).addChild(childNode);
+                }
             }
         }
         return node;
@@ -210,19 +220,19 @@ public class TreeVisitor {
     public static void main(String[] args) {
         Tree root = solve();
         SumInLeavesVisitor vis1 = new SumInLeavesVisitor();
-//        ProductOfRedNodesVisitor vis2 = new ProductOfRedNodesVisitor();
-//        FancyVisitor vis3 = new FancyVisitor();
+        ProductOfRedNodesVisitor vis2 = new ProductOfRedNodesVisitor();
+        FancyVisitor vis3 = new FancyVisitor();
 
         root.accept(vis1);
-//        root.accept(vis2);
-//        root.accept(vis3);
+        root.accept(vis2);
+        root.accept(vis3);
 
         int res1 = vis1.getResult();
-//        int res2 = vis2.getResult();
-//        int res3 = vis3.getResult();
+        int res2 = vis2.getResult();
+        int res3 = vis3.getResult();
 
         System.out.println(res1);
-//        System.out.println(res2);
-//        System.out.println(res3);
+        System.out.println(res2);
+        System.out.println(res3);
     }
 }
