@@ -4,19 +4,15 @@ import java.util.Scanner;
 
 public class GameOfTwoStacks {
 
-    static int moveMax = 0;
-    static int sumMax = 0;
-
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         int g = in.nextInt();
         for(int a0 = 0; a0 < g; a0++){
+            System.out.printf("Loading game %d\n", a0);
+
             int n = in.nextInt();
             int m = in.nextInt();
             int x = in.nextInt();
-
-            moveMax = 0;
-            sumMax = x;
 
             int[] a = new int[n];
             for(int a_i=0; a_i < n; a_i++){
@@ -27,28 +23,36 @@ public class GameOfTwoStacks {
                 b[b_i] = in.nextInt();
             }
             // your code goes here
+            System.out.printf("Playing game ... %d %d\n", a0, x);
 
-            doMove(a, b, 0, 0, 0, 0);
+            int sum = 0;
+            int i = 0;
+            int j = 0;
+            int count = 0;
 
-            System.out.println(moveMax);
-        }
-    }
-
-    private static void doMove(int[] a, int[] b, int an, int bn, int depth, int sum) {
-        if (sum > sumMax) {
-            if (depth-1 > moveMax) {
-                moveMax = depth-1;
+            while (i < n && sum+a[i] <= x) {
+                sum += a[i];
+                i++;
             }
-            return;
-        }
+            count = i;
 
-        if (an < a.length) {
-            doMove(a, b, an+1, bn, depth+1, sum + a[an]);
-        }
+            while (j < m) {
+                sum += b[j];
+                j++;
 
-        if (bn < b.length) {
-            doMove(a, b, bn, bn+1, depth+1, sum + b[bn]);
+                while (sum > x && i > 0) {
+                    i--;
+                    sum -= a[i];
+                }
+
+                if (sum <= x && i+j > count) {
+                    count = i+j;
+                }
+            }
+
+            System.out.println(count);
         }
     }
+
 
 }
