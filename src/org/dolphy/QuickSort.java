@@ -27,15 +27,13 @@ class QuickSort {
 
     static int partition(int[] arr, int min, int max) {
         int pivot = arr[max];
-        int i = min - 1;
+        int i = min;
         for (int j = min; j < max; j++) {
-            if (arr[j] < pivot) {
-                i++;
-                swap(arr, i, j);                
-            }               
+            if (arr[j] < pivot) 
+                swap(arr, i++, j);                
         }
-        swap(arr, i+1, max);
-        return i+1;
+        swap(arr, i, max);
+        return i;
     }
 
     static void swap(int[] arr, int i, int j) {
