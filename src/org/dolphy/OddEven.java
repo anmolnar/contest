@@ -7,21 +7,21 @@ import java.lang.*;
 class OddEven {
     static final CountDownLatch latch = new CountDownLatch(2);
 
+    static final Object syncLock = new Object();
 
 
     static class OddThread extends Thread {
-        Thread evenThread;
-
-        void setEvenThread(Thread evenThread) {
-            this.evenThread = evenThread;
-        }
-
-        public synchronized void run() {
+        public void run() {
             try {
-                for (int i = 1; i<=99; i+=2) {
-                    System.out.println(i);                    
-                    evenThread.notifyAll();
-                    wait();
+                int i = 1;
+                while (i <= 99) {
+                    System.out.println(i);
+                    synchronized (syncLock) {
+                        syncLock.notify();
+                        if (i < 99)
+                            syncLock.wait();
+                    }
+                    i += 2;
                 }
             } catch (InterruptedException e) {}
             latch.countDown();
@@ -29,18 +29,17 @@ class OddEven {
     }
 
     static class EvenThread extends Thread {
-        Thread oddThread;
-
-        void setOddThread(Thread oddThread) {
-            this.oddThread = oddThread;
-        }
-
-        public synchronized void run() {
+        public void run() {            
             try {
-                for (int i=2; i<=100; i+=2) {
+                int i = 2;
+                while (i <= 100) {
                     System.out.println(i);
-                    oddThread.notifyAll();
-                    wait();
+                    synchronized (syncLock) {
+                        syncLock.notify();
+                        if (i < 100)
+                            syncLock.wait();
+                    }
+                    i += 2;
                 }
             } catch (InterruptedException e) {}
             latch.countDown();
@@ -50,8 +49,6 @@ class OddEven {
     public static void main(String[] args) throws InterruptedException {
         OddThread oddThread = new OddThread();
         EvenThread evenThread = new EvenThread();
-        oddThread.setEvenThread(evenThread);
-        evenThread.setOddThread(oddThread);
 
         oddThread.start();
         evenThread.start();
